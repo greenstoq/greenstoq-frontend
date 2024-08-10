@@ -126,7 +126,8 @@ export const queryReviewsError = e => ({
 
 // ================ Thunks ================ //
 
-export const queryUserListings = (userId, config) => (dispatch, getState, sdk) => {
+export const queryUserListings = (userId, config) => (dispatch, getState, sdks) => {
+  const sdk = sdks.shareTribeSdk;
   dispatch(queryListingsRequest(userId));
 
   const {
@@ -157,7 +158,8 @@ export const queryUserListings = (userId, config) => (dispatch, getState, sdk) =
     .catch(e => dispatch(queryListingsError(storableError(e))));
 };
 
-export const queryUserReviews = userId => (dispatch, getState, sdk) => {
+export const queryUserReviews = userId => (dispatch, getState, sdks) => {
+  const sdk = sdks.shareTribeSdk;
   sdk.reviews
     .query({
       subject_id: userId,
@@ -172,7 +174,8 @@ export const queryUserReviews = userId => (dispatch, getState, sdk) => {
     .catch(e => dispatch(queryReviewsError(e)));
 };
 
-export const showUser = (userId, config) => (dispatch, getState, sdk) => {
+export const showUser = (userId, config) => (dispatch, getState, sdks) => {
+  const sdk = sdks.shareTribeSdk;
   dispatch(showUserRequest(userId));
   return sdk.users
     .show({
