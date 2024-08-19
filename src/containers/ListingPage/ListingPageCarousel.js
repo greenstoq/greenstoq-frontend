@@ -355,11 +355,6 @@ export const ListingPageComponent = props => {
               intl={intl}
             />
 
-            <SectionTextMaybe
-              text={publicData.extraFeatures}
-              heading={intl.formatMessage({ id: 'ListingPage.extraFeaturesTitle' })}
-            />
-
             <SectionMapMaybe
               geolocation={geolocation}
               publicData={publicData}
