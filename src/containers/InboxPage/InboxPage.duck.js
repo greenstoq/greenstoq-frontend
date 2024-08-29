@@ -112,7 +112,7 @@ export const loadData = (params, search) => (dispatch, getState, sdks) => {
       'lineItems',
     ],
     'fields.listing': ['title', 'availabilityPlan', 'publicData.listingType'],
-    'fields.user': ['profile.displayName', 'profile.abbreviatedName'],
+    'fields.user': ['profile.displayName', 'profile.abbreviatedName', 'deleted', 'banned'],
     'fields.image': ['variants.square-small', 'variants.square-small2x'],
     page,
     perPage: INBOX_PAGE_SIZE,

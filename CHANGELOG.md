@@ -14,8 +14,45 @@ way to update this template, but currently, we follow a pattern:
 
 ## Upcoming version 2024-XX-XX
 
+- [change] Updates to the configuration script. Marketplace name is now prompted in the mandatory
+  settings. [#440](https://github.com/sharetribe/web-template/pull/440)
+- [change] Update one copy text. [#439](https://github.com/sharetribe/web-template/pull/439)
+
+## [v5.4.0] 2024-08-20
+
+- [change] Update Sentry (v6.19.7 -> v8.26.0). Add ignoreErrors setup, add CSP directives and avoid
+  some errors. [#441](https://github.com/sharetribe/web-template/pull/441)
+- [fix] ListingPage: the optional chaining for processType variable was faulty.
+  [#443](https://github.com/sharetribe/web-template/pull/443)
+- [change] auth.duck.js: login flow should wait for currentUser entity be loaded.
+  [#436](https://github.com/sharetribe/web-template/pull/436)
+- [add] Access control: private marketplace mode
+
+  - Fetch a new asset: /general/access-control.json to check private: true/false flag
+  - Make SearchPage, ListingPage, ProfilePage, Styleguide require authentication
+  - Ensure currentUser entity is loaded before loadData on client-side
+  - Restrict data load & add redirections for SearchPage, ListingPage, and ProfilePage
+
+  [#434](https://github.com/sharetribe/web-template/pull/434)
+
+- [add] Access control: 'pending-approval' state for users.
+
+  - Users will get "state", which is exposed through currentUser's attribute
+  - A new state is "pending-approval", which restricts user from initiating transactions and posting
+    listings.
+  - In addition, 'banned' users will also have state 'banned'.
+  - Extra: Routes.js: do not allow banned users to auth pages
+  - [fix]: InboxPage.duck.js: include deleted and banned attributes
+  - [fix]: ModalMissingInformation: only 'active' users get this modal shown
+  - [fix]: Inquiry modal: open the modal after authentication
+  - Some util-file imports have been reordered (might cause conflicts)
+
+  [#428](https://github.com/sharetribe/web-template/pull/428)
+
 - [fix] SearchPage: SearchFiltersMobile (modal) should be above topbar.
   [#432](https://github.com/sharetribe/web-template/pull/432)
+
+  [v5.4.0]: https://github.com/sharetribe/web-template/compare/v5.3.0...v5.4.0
 
 ## [v5.3.0] 2024-08-13
 
