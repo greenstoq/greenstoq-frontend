@@ -2376,6 +2376,7 @@ describe('EditListingPageComponent', () => {
         onRemoveListingImage={noop}
         onPayoutDetailsChange={noop}
         onPayoutDetailsSubmit={noop}
+        getDocuments={noop}
         page={{
           uploadedImagesOrder: [],
           images: {},

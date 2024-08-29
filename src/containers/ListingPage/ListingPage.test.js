@@ -159,6 +159,7 @@ describe('ListingPage variants', () => {
     },
     { author: createUser('reviewerA'), listing: listing1 }
   );
+  const documents = []
 
   // We'll initialize the store with relevant listing data
   const initialState = {
@@ -166,7 +167,9 @@ describe('ListingPage variants', () => {
       id: listing1.id,
       showListingError: null,
       reviews: [review],
+      documents: [documents],
       fetchReviewsError: null,
+      fetchDocumentsError: null,
       monthlyTimeSlots: {
         // '2022-03': {
         //   timeSlots: [],

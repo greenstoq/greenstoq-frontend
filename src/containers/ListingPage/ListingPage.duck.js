@@ -28,6 +28,10 @@ export const FETCH_REVIEWS_REQUEST = 'app/ListingPage/FETCH_REVIEWS_REQUEST';
 export const FETCH_REVIEWS_SUCCESS = 'app/ListingPage/FETCH_REVIEWS_SUCCESS';
 export const FETCH_REVIEWS_ERROR = 'app/ListingPage/FETCH_REVIEWS_ERROR';
 
+export const FETCH_DOCUMENTS_REQUEST = 'app/ListingPage/FETCH_DOCUMENTS_REQUEST';
+export const FETCH_DOCUMENTS_SUCCESS = 'app/ListingPage/FETCH_DOCUMENTS_SUCCESS';
+export const FETCH_DOCUMENTS_ERROR = 'app/ListingPage/FETCH_DOCUMENTS_ERROR';
+
 export const FETCH_TIME_SLOTS_REQUEST = 'app/ListingPage/FETCH_TIME_SLOTS_REQUEST';
 export const FETCH_TIME_SLOTS_SUCCESS = 'app/ListingPage/FETCH_TIME_SLOTS_SUCCESS';
 export const FETCH_TIME_SLOTS_ERROR = 'app/ListingPage/FETCH_TIME_SLOTS_ERROR';
@@ -46,7 +50,9 @@ const initialState = {
   id: null,
   showListingError: null,
   reviews: [],
+  documents: [],
   fetchReviewsError: null,
+  fetchDocumentsError: null,
   monthlyTimeSlots: {
     // '2022-03': {
     //   timeSlots: [],
@@ -79,6 +85,13 @@ const listingPageReducer = (state = initialState, action = {}) => {
       return { ...state, reviews: payload };
     case FETCH_REVIEWS_ERROR:
       return { ...state, fetchReviewsError: payload };
+
+    case FETCH_DOCUMENTS_REQUEST:
+      return { ...state, fetchDocumentsError: null };
+    case FETCH_DOCUMENTS_SUCCESS:
+      return { ...state, documents: payload };
+    case FETCH_DOCUMENTS_ERROR:
+      return { ...state, fetchDocumentsError: payload };
 
     case FETCH_TIME_SLOTS_REQUEST: {
       const monthlyTimeSlots = {
@@ -159,6 +172,14 @@ export const fetchReviewsRequest = () => ({ type: FETCH_REVIEWS_REQUEST });
 export const fetchReviewsSuccess = reviews => ({ type: FETCH_REVIEWS_SUCCESS, payload: reviews });
 export const fetchReviewsError = error => ({
   type: FETCH_REVIEWS_ERROR,
+  error: true,
+  payload: error,
+});
+
+export const fetchDocumentsRequest = () => ({ type: FETCH_DOCUMENTS_REQUEST });
+export const fetchDocumentsSuccess = documents => ({ type: FETCH_DOCUMENTS_SUCCESS, payload: documents });
+export const fetchDocumentsError = error => ({
+  type: FETCH_DOCUMENTS_ERROR,
   error: true,
   payload: error,
 });
@@ -273,6 +294,18 @@ export const fetchReviews = listingId => (dispatch, getState, sdks) => {
       dispatch(fetchReviewsError(storableError(e)));
     });
 };
+
+export const fetchDocuments = listingId => (dispatch, getState, sdks) => {
+  const sdk = sdks.greenStoqSdk;
+  dispatch(fetchDocumentsRequest());
+  return sdk.getDocuments(listingId.uuid)
+    .then(response => {
+      dispatch(fetchDocumentsSuccess(response.documents));
+    })
+    .catch(e => {
+      dispatch(fetchDocumentsError(storableError(e)));
+    });
+}
 
 const timeSlotsRequest = params => (dispatch, getState, sdks) => {
   const sdk = sdks.shareTribeSdk;
@@ -412,6 +445,7 @@ export const loadData = (params, search, config) => (dispatch, getState, sdk) =>
   return Promise.all([
     dispatch(showListing(listingId, config)),
     dispatch(fetchReviews(listingId)),
+    dispatch(fetchDocuments(listingId)),
   ]).then(response => {
     const listingResponse = response[0];
     const listing = listingResponse?.data?.data;
