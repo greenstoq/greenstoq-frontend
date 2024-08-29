@@ -80,6 +80,7 @@ import SectionGallery from './SectionGallery';
 import CustomListingFields from './CustomListingFields';
 
 import css from './ListingPage.module.css';
+import SectionDocuments from './SectionDocuments';
 
 const MIN_LENGTH_FOR_LONG_WORDS_IN_TITLE = 16;
 
@@ -102,7 +103,9 @@ export const ListingPageComponent = props => {
     scrollingDisabled,
     showListingError,
     reviews,
+    documents,
     fetchReviewsError,
+    fetchDocumentsError,
     sendInquiryInProgress,
     sendInquiryError,
     monthlyTimeSlots,
@@ -361,7 +364,11 @@ export const ListingPageComponent = props => {
               listingId={currentListing.id}
               mapsConfig={config.maps}
             />
+
+            <SectionDocuments documents={documents} fetchDocumentsError={fetchDocumentsError} />
+
             <SectionReviews reviews={reviews} fetchReviewsError={fetchReviewsError} />
+
             <SectionAuthorMaybe
               title={title}
               listing={currentListing}
@@ -425,7 +432,9 @@ ListingPageComponent.defaultProps = {
   inquiryModalOpenForListingId: null,
   showListingError: null,
   reviews: [],
+  documents: [],
   fetchReviewsError: null,
+  fetchDocumentsError: null,
   monthlyTimeSlots: null,
   sendInquiryError: null,
   lineItems: null,
@@ -466,7 +475,9 @@ ListingPageComponent.propTypes = {
   showListingError: propTypes.error,
   callSetInitialValues: func.isRequired,
   reviews: arrayOf(propTypes.review),
+  documents: array.isRequired,
   fetchReviewsError: propTypes.error,
+  fetchDocumentsError: propTypes.error,
   monthlyTimeSlots: object,
   // monthlyTimeSlots could be something like:
   // monthlyTimeSlots: {
@@ -535,7 +546,9 @@ const mapStateToProps = state => {
   const {
     showListingError,
     reviews,
+    documents,
     fetchReviewsError,
+    fetchDocumentsError,
     monthlyTimeSlots,
     sendInquiryInProgress,
     sendInquiryError,
@@ -567,7 +580,9 @@ const mapStateToProps = state => {
     inquiryModalOpenForListingId,
     showListingError,
     reviews,
+    documents,
     fetchReviewsError,
+    fetchDocumentsError,
     monthlyTimeSlots,
     lineItems,
     fetchLineItemsInProgress,

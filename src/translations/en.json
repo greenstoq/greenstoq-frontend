@@ -447,7 +447,9 @@
   "ListingPage.payoutDetailsWarning": "This listing is not available {processType, select, booking {for booking} other {for purchase}}. You have not added your payout details yet.",
   "ListingPage.payoutDetailsWarningLink": "Add your payout details",
   "ListingPage.reviewsError": "Loading reviews failed.",
+  "ListingPage.documentsError": "Loading documents failed.",
   "ListingPage.reviewsTitle": "Reviews ({count})",
+  "ListingPage.documentsTitle": "Documents ({count})",
   "ListingPage.schemaTitle": "{title} | {marketplaceName}",
   "ListingPage.viewImagesButton": "View photos ({count})",
   "LoadableComponentErrorBoundaryPage.description": "It looks like the app needs to be updated! Please refresh the page or go back to {link}.",
@@ -513,7 +515,7 @@
   "NoAccessPage.postListings.content": "You need to receive publishing rights from the {marketplaceName} team.",
   "NoAccessPage.userPendingApproval.schemaTitle": "No user approval",
   "NoAccessPage.userPendingApproval.heading": "Your account is waiting for approval",
-  "NoAccessPage.userPendingApproval.content": "You need approval from the {marketplaceName} team to get access to the marketplace.",  
+  "NoAccessPage.userPendingApproval.content": "You need approval from the {marketplaceName} team to get access to the marketplace.",
   "OrderBreakdown.baseUnitDay": "{unitPrice} x {quantity, number} {quantity, plural, one {day} other {days}}",
   "OrderBreakdown.baseUnitNight": "{unitPrice} x {quantity, number} {quantity, plural, one {night} other {nights}}",
   "OrderBreakdown.baseUnitHour": "{unitPrice} x {quantity, number} {quantity, plural, one {hour} other {hours}}",
@@ -1134,6 +1136,5 @@
   "EditListingDocumentsForm.updateFailed": "Updating listing documents failed",
   "EditListingDocumentsForm.showListingFailed": "Fetching listing documents failed",
   "EditListingWizard.default-booking.new.saveDocuments": "Next",
-  "EditListingWizard.edit.saveDocuments": "Save changes",
-  "ListingPage.documentsTitle": "Documents"
+  "EditListingWizard.edit.saveDocuments": "Save changes"
 }
