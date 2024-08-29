@@ -323,8 +323,8 @@ export const fetchCurrentUserNotifications = () => (dispatch, getState, sdks) =>
 };
 
 export const fetchCurrentUser = options => (dispatch, getState, sdks) => {
-  const sdk = sdks.shareTribeSdk;
   const state = getState();
+  const sdk = sdks.shareTribeSdk;
   const { currentUserHasListings, currentUserShowTimestamp } = state.user || {};
   const { isAuthenticated } = state.auth;
   const { callParams = null, updateHasListings = true, updateNotifications = true, afterLogin } =
