@@ -55,7 +55,7 @@
   --marketplaceColorLight: #7748d5; /* hsl(260, 63%, 56%), +10L from marketplaceColor */
   --marketplaceColorDark: #492296; /* hsl(260, 63%, 26%), -10L from marketplaceColor */
 
-  /** 
+  /**
    * The fill color used by <PrimaryButton>
    * These might be overwritten by values from hosted assets
    */
@@ -63,7 +63,7 @@
   --colorPrimaryButtonDark: var(--colorSuccessDark);
   --colorPrimaryButtonLight: var(--colorSuccessLight);
 
-  /** 
+  /**
    * The fill color used by <SecondaryButton>
    */
   --colorSecondaryButton: var(--colorWhite);
@@ -578,7 +578,7 @@ textarea {
 /* ================ Plain global CSS glasses ================ */
 
 /**
- * Note: even though these reflect element styles, 
+ * Note: even though these reflect element styles,
  * these are below element styles to allow overwrites using classes.
  */
 
@@ -947,7 +947,7 @@ textarea {
  * For actual buttons, use components: <Button>, <PrimaryButton>, <SecondaryButton>
  *
  * To create button look-and-feel for links, etc. combine button classes in CSS Modules:
- * 
+ *
  * <Button>:
  *   composes: buttonDefault from global;
  * <PrimaryButton>:
@@ -1495,4 +1495,29 @@ textarea {
   @media (--viewportMedium) {
     margin-top: 32px;
   }
+}
+
+#EditListingDetailsForm\.pub_cas_number {
+
+  /* Adjust the height to look like an input text field */
+  height: auto; /* Auto-height to make it similar to input */
+  min-height: 2em; /* To ensure the textarea doesn't stretch vertically */
+  padding: 0.5em; /* Adjust the padding to match input fields */
+
+  /* Remove the resizable corners and overflow controls */
+  resize: none;
+  overflow: hidden;
+
+  /* Ensure the text wraps like an input text field */
+  white-space: nowrap;
+
+  /* Optionally: Apply border and background to make it look like an input */
+  border: 1px solid #ccc; /* Match with input styles */
+  border-radius: 4px;
+  box-sizing: border-box; /* Include padding in width calculation */
+
+  /* Optional: Adjust font and alignment */
+  font-family: inherit; /* Match input font style */
+  font-size: 1em;
+  line-height: 1.2em;
 }
