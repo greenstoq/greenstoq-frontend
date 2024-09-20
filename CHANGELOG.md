@@ -14,16 +14,35 @@ way to update this template, but currently, we follow a pattern:
 
 ## Upcoming version 2024-XX-XX
 
-- [change] Updates to the configuration script. Marketplace name is now prompted in the mandatory
-  settings. [#440](https://github.com/sharetribe/web-template/pull/440)
-- [change] Update one copy text. [#439](https://github.com/sharetribe/web-template/pull/439)
+- [fix] InquiryForm: test code was committed earlier.
+  [#452](https://github.com/sharetribe/web-template/pull/452)
+- [fix] EmailVerification: enforce that currentUser is fetched after verification.
+  [#451](https://github.com/sharetribe/web-template/pull/451)
+- [fix] ListingPage: fix 0 as value of listing fields.
+  [#449](https://github.com/sharetribe/web-template/pull/449)
+- [fix] EditListingDetailsPanel: fix 0 as value of listing fields.
+  [#448](https://github.com/sharetribe/web-template/pull/448)
+- [fix] Currencies that the Stripe does not support should not cause 500 errors.
+  [#447](https://github.com/sharetribe/web-template/pull/447)
 
-## [v5.4.0] 2024-08-20
+## [v5.5.0] 2024-09-03
 
+- [add] Add currently available translations for DE, ES, FR.
+  [#445](https://github.com/sharetribe/web-template/pull/445)
+- [change] Make the propType blockId optional for all Block types.
+  [#444](https://github.com/sharetribe/web-template/pull/444)
 - [change] Update Sentry (v6.19.7 -> v8.26.0). Add ignoreErrors setup, add CSP directives and avoid
   some errors. [#441](https://github.com/sharetribe/web-template/pull/441)
 - [fix] ListingPage: the optional chaining for processType variable was faulty.
   [#443](https://github.com/sharetribe/web-template/pull/443)
+- [change] Updates to the configuration script. Marketplace name is now prompted in the mandatory
+  settings. [#440](https://github.com/sharetribe/web-template/pull/440)
+- [change] Update one copy text. [#439](https://github.com/sharetribe/web-template/pull/439)
+
+  [v5.5.0]: https://github.com/sharetribe/web-template/compare/v5.4.0...v5.5.0
+
+## [v5.4.0] 2024-08-20
+
 - [change] auth.duck.js: login flow should wait for currentUser entity be loaded.
   [#436](https://github.com/sharetribe/web-template/pull/436)
 - [add] Access control: private marketplace mode
