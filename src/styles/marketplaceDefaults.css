@@ -1533,7 +1533,7 @@ textarea {
   }
 }
 
-#EditListingDetailsForm\.pub_cas_number {
+#EditListingDetailsForm\.pub_cas_number,#EditListingDetailsForm\.pub_original_supplier {
 
   /* Adjust the height to look like an input text field */
   height: auto; /* Auto-height to make it similar to input */

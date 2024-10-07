@@ -274,17 +274,7 @@ const AddListingFields = props => {
 
 // Form that asks title, description, transaction process and unit type for pricing
 // In addition, it asks about custom fields according to marketplace-custom-config.js
-const EditListingDetailsFormComponent = props => {
-
-  useEffect(() => {
-    const textarea = document.getElementById('EditListingDetailsForm.pub_cas_number');
-    if (textarea) {
-      textarea.placeholder = 'Write a valid CAS number';
-    }
-  }, []);
-
-  return (
-
+const EditListingDetailsFormComponent = props => (
   <FinalForm
     {...props}
     mutators={{ ...arrayMutators }}
@@ -423,7 +413,7 @@ const EditListingDetailsFormComponent = props => {
       );
     }}
   />
-) };
+);
 
 EditListingDetailsFormComponent.defaultProps = {
   className: null,
