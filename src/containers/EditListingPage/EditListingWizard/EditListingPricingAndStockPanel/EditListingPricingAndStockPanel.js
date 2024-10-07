@@ -46,7 +46,10 @@ const getInitialValues = props => {
       : 1;
   const stockTypeInfinity = [];
 
-  return { price, stock, stockTypeInfinity };
+  const units = publicData?.units || null;
+  const minimumOrder = publicData?.minimumOrder || null;
+
+  return { price, stock, units, minimumOrder, stockTypeInfinity };
 };
 
 const EditListingPricingAndStockPanel = props => {
@@ -105,7 +108,7 @@ const EditListingPricingAndStockPanel = props => {
           className={css.form}
           initialValues={initialValues}
           onSubmit={values => {
-            const { price, stock, stockTypeInfinity } = values;
+            const { price, stock, units, minimumOrder, stockTypeInfinity } = values;
 
             // Update stock only if the value has changed, or stock is infinity in stockType,
             // but not current stock is a small number (might happen with old listings)
@@ -138,6 +141,10 @@ const EditListingPricingAndStockPanel = props => {
             const updateValues = {
               price,
               ...stockUpdateMaybe,
+              publicData: {
+                units: units? units : null,
+                minimumOrder: minimumOrder? minimumOrder: null,
+              },
             };
             // Save the initialValues to state
             // Otherwise, re-rendering would overwrite the values during XHR call.
@@ -145,6 +152,8 @@ const EditListingPricingAndStockPanel = props => {
               initialValues: {
                 price,
                 stock: stockUpdateMaybe?.stockUpdate?.newTotal || stock,
+                units,
+                minimumOrder,
                 stockTypeInfinity,
               },
             });

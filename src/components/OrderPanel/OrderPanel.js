@@ -199,6 +199,8 @@ const OrderPanel = props => {
   const lineItemUnitType = lineItemUnitTypeMaybe || `line-item/${unitType}`;
 
   const price = listing?.attributes?.price;
+  const units = publicData?.units || null;
+  const minimumOrder = publicData?.minimumOrder || null;
   const isPaymentProcess = processName !== INQUIRY_PROCESS_NAME;
 
   const showPriceMissing = isPaymentProcess && !price;
@@ -293,6 +295,10 @@ const OrderPanel = props => {
           marketplaceCurrency={marketplaceCurrency}
         />
 
+        {units ? (
+          <span><FormattedMessage id="OrderPanel.perUnitLabel"/> {units}</span>
+        ): null}
+
         <div className={css.author}>
           <AvatarSmall user={author} className={css.providerAvatar} />
           <span className={css.providerNameLinked}>
@@ -371,6 +377,7 @@ const OrderPanel = props => {
             fetchLineItemsInProgress={fetchLineItemsInProgress}
             fetchLineItemsError={fetchLineItemsError}
             payoutDetailsWarning={payoutDetailsWarning}
+            minimumOrder={minimumOrder}
           />
         ) : showInquiryForm ? (
           <InquiryWithoutPaymentForm formId="OrderPanelInquiryForm" onSubmit={onSubmit} />

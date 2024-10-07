@@ -132,6 +132,7 @@ const renderForm = formRenderProps => {
     price,
     payoutDetailsWarning,
     marketplaceName,
+    minimumOrder,
     values,
   } = formRenderProps;
 
@@ -248,6 +249,10 @@ const renderForm = formRenderProps => {
           ))}
         </FieldSelect>
       )}
+
+      {minimumOrder ? (
+        <span><FormattedMessage id="EditListingPricingAndStockForm.minimumOrderLabelOrder"/> <b>{minimumOrder}</b></span>
+      ): null}
 
       <DeliveryMethodMaybe
         displayDeliveryMethod={displayDeliveryMethod}

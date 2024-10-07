@@ -25,6 +25,7 @@ import {
 
 // Import modules from this directory
 import css from './EditListingPricingAndStockForm.module.css';
+import FieldSelect from '../../../../components/FieldSelect/FieldSelect';
 
 const { Money } = sdkTypes;
 const MILLION = 1000000;
@@ -198,6 +199,40 @@ export const EditListingPricingAndStockFormComponent = props => (
             </Field>
           )}
           {setStockError ? <p className={css.error}>{stockErrorMessage}</p> : null}
+
+          <FieldSelect
+            id={`${formId}.units`}
+            name="units"
+            className={css.input}
+            label={intl.formatMessage({ id: 'EditListingPricingAndStockForm.unitsTypeLabel' })}
+            validate={validators.required(
+              intl.formatMessage({ id: 'EditListingPricingAndStockForm.unitsTypeRequired' })
+            )}
+          >
+            <option disabled value="">
+              {intl.formatMessage({ id: 'EditListingPricingAndStockForm.unitsTypePlaceholder' })}
+            </option>
+            <option key="m3" value="m3">
+              m3
+            </option>
+            <option key="mg" value="mg">
+              mg
+            </option>
+            <option key="item" value="item">
+              item
+            </option>
+          </FieldSelect>
+
+          <FieldTextInput
+            className={css.input}
+            id={`${formId}.minimumOrder`}
+            name="minimumOrder"
+            label={intl.formatMessage({ id: 'EditListingPricingAndStockForm.minimumOrderLabel' })}
+            placeholder={intl.formatMessage({
+              id: 'EditListingPricingAndStockForm.minimumOrderPlaceholder',
+            })}
+            type="number"
+          />
 
           <Button
             className={css.submitButton}
