@@ -13,6 +13,26 @@ way to update this template, but currently, we follow a pattern:
 ---
 
 ## Upcoming version 2024-XX-XX
+- [add] Add currently available translations for DE, ES, FR.
+  [#466](https://github.com/sharetribe/web-template/pull/466)
+
+## [v5.7.0] 2024-10-08
+
+- [add] Access control: Viewing rights.
+
+  When a user's viewing rights have been revoked:
+
+  - SearchPage redirects to NoAccessPage
+  - ListingPage redirects to NoAccessPage unless the user is viewing their own listing. Reviews are
+    not displayed.
+  - ProfilePage redirects to NoAccessPage unless the user is viewing their own profile. Reviews are
+    not displayed.
+  - TransactionPage does not show the OrderPanel for transactions at the inquiry state of booking or
+    purchase processes.
+
+  [#459](https://github.com/sharetribe/web-template/pull/459)
+
+  [v5.7.0]: https://github.com/sharetribe/web-template/compare/v5.6.1...v5.7.0
 
 ## [v5.6.1] 2024-10-07
 
