@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { FormattedMessage } from '../../../../util/reactIntl';
@@ -32,6 +32,7 @@ const EditListingDocumentsPanel = props => {
   const unitType = listing?.attributes?.publicData?.unitType;
 
   const [tableDocuments, addTableDocuments] = useState(initialDocuments);
+  useEffect(() => { addTableDocuments(initialDocuments)}, [initialDocuments] )
   const [originalDocumentsToRemove, addOriginalDocumentsToRemove] = useState([]);
   const [newDocuments, addNewDocuments] = useState([]);
 

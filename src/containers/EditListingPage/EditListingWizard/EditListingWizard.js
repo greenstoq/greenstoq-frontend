@@ -493,6 +493,12 @@ class EditListingWizard extends Component {
     // Check if wizard tab is active / linkable.
     // When creating a new listing, we don't allow users to access next tab until the current one is completed.
     const tabsStatus = tabsActive(isNewListingFlow, currentListing, tabs, config);
+    if (isNewListingFlow
+      && tabs.indexOf(selectedTab) <= tabs.indexOf("documents")
+      && (listing.documents === undefined? true: listing.documents.length === 0)
+    ) {
+      tabsStatus["pricing-and-stock"] = false
+    }
 
     // Redirect user to first tab when encoutering outdated draft listings.
     if (invalidExistingListingType && isNewListingFlow && selectedTab !== tabs[0]) {
