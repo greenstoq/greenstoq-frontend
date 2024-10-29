@@ -274,8 +274,9 @@ export const initiateOrder = (
 export const confirmPayment = (transactionId, transitionName, transitionParams = {}) => (
   dispatch,
   getState,
-  sdk
+  sdks
 ) => {
+  const sdk = sdks.shareTribeSdk;
   dispatch(confirmPaymentRequest());
 
   const bodyParams = {
