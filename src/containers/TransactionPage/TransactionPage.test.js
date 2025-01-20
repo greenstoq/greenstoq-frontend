@@ -1,7 +1,6 @@
-import React from 'react';
+import React, { act } from 'react';
 import '@testing-library/jest-dom';
 import Decimal from 'decimal.js';
-import 'react-dates/initialize';
 
 import { types as sdkTypes } from '../../util/sdkLoader';
 import {
@@ -160,7 +159,7 @@ describe('TransactionPage', () => {
       };
     });
 
-    test.each(purchases)('check purchase: $tr', ({ tr, tx, isReversal, isReceived }) => {
+    test.each(purchases)('check purchase: $tr', async ({ tr, tx, isReversal, isReceived }) => {
       const transactionRole = TX_TRANSITION_ACTOR_PROVIDER;
 
       const stateData = getStateData(
@@ -187,8 +186,9 @@ describe('TransactionPage', () => {
           id: tx.id?.uuid,
         },
       };
-
-      render(<TransactionPageComponent {...props} />);
+      await act(async () => {
+        render(<TransactionPageComponent {...props} />);
+      });
 
       const state = stateData.processState;
       const providerTitle = `TransactionPage.${processName}.${transactionRole}.${state}.title`;
@@ -299,7 +299,7 @@ describe('TransactionPage', () => {
       };
     });
 
-    test.each(purchases)('check purchase: $tr', ({ tr, tx, isReversal, isReceived }) => {
+    test.each(purchases)('check purchase: $tr', async ({ tr, tx, isReversal, isReceived }) => {
       const transactionRole = TX_TRANSITION_ACTOR_CUSTOMER;
       const isInquiry = tr === 'transition/inquire';
 
@@ -328,7 +328,9 @@ describe('TransactionPage', () => {
         },
       };
 
-      render(<TransactionPageComponent {...props} />);
+      await act(async () => {
+        render(<TransactionPageComponent {...props} />);
+      });
 
       const state = stateData.processState;
       const providerTitle = `TransactionPage.${processName}.${transactionRole}.${state}.title`;
@@ -457,7 +459,7 @@ describe('TransactionPage', () => {
       };
     });
 
-    test.each(bookings)('check booking: $tr', ({ tr, tx, isReversal, isReceived }) => {
+    test.each(bookings)('check booking: $tr', async ({ tr, tx, isReversal, isReceived }) => {
       const transactionRole = TX_TRANSITION_ACTOR_PROVIDER;
       const isInquiry = tr === 'transition/inquire';
 
@@ -486,7 +488,9 @@ describe('TransactionPage', () => {
         },
       };
 
-      render(<TransactionPageComponent {...props} />);
+      await act(async () => {
+        render(<TransactionPageComponent {...props} />);
+      });
 
       const state = stateData.processState;
       const txTitle = `TransactionPage.${processName}.${transactionRole}.${state}.title`;
@@ -625,7 +629,7 @@ describe('TransactionPage', () => {
       };
     });
 
-    test.each(bookings)('check booking: $tr', ({ tr, tx, isReversal, isReceived }) => {
+    test.each(bookings)('check booking: $tr', async ({ tr, tx, isReversal, isReceived }) => {
       const transactionRole = TX_TRANSITION_ACTOR_CUSTOMER;
       const isInquiry = tr === 'transition/inquire';
 
@@ -654,7 +658,9 @@ describe('TransactionPage', () => {
         },
       };
 
-      render(<TransactionPageComponent {...props} />);
+      await act(async () => {
+        render(<TransactionPageComponent {...props} />);
+      });
 
       const state = stateData.processState;
       const txTitle = `TransactionPage.${processName}.${transactionRole}.${state}.title`;
@@ -789,7 +795,7 @@ describe('TransactionPage', () => {
       };
     });
 
-    test.each(bookings)('check booking: $tr', ({ tr, tx, isReversal, isReceived }) => {
+    test.each(bookings)('check booking: $tr', async ({ tr, tx, isReversal, isReceived }) => {
       const transactionRole = TX_TRANSITION_ACTOR_PROVIDER;
       const isInquiry = tr === 'transition/inquire';
 
@@ -818,7 +824,9 @@ describe('TransactionPage', () => {
         },
       };
 
-      render(<TransactionPageComponent {...props} />);
+      await act(async () => {
+        render(<TransactionPageComponent {...props} />);
+      });
 
       const state = stateData.processState;
       const txTitle = `TransactionPage.${processName}.${transactionRole}.${state}.title`;
@@ -956,7 +964,7 @@ describe('TransactionPage', () => {
       };
     });
 
-    test.each(bookings)('check purchase: $tr', ({ tr, tx, isReversal, isReceived }) => {
+    test.each(bookings)('check purchase: $tr', async ({ tr, tx, isReversal, isReceived }) => {
       const transactionRole = TX_TRANSITION_ACTOR_CUSTOMER;
       const isInquiry = tr === 'transition/inquire';
 
@@ -985,7 +993,9 @@ describe('TransactionPage', () => {
         },
       };
 
-      render(<TransactionPageComponent {...props} />);
+      await act(async () => {
+        render(<TransactionPageComponent {...props} />);
+      });
 
       const state = stateData.processState;
       const txTitle = `TransactionPage.${processName}.${transactionRole}.${state}.title`;
@@ -1061,15 +1071,6 @@ describe('TransactionPage', () => {
   // With OrderPanel
   // NOTE: OrderPanel is code-splitted away. Due to async nature, it can't be tested with "test.each()"
   describe('Transaction process with OrderPanel', () => {
-    const originalWarn = console.warn.bind(console.warn);
-    beforeAll(() => {
-      console.warn = msg =>
-        !msg.toString().includes('componentWillReceiveProps') && originalWarn(msg);
-    });
-    afterAll(() => {
-      console.warn = originalWarn;
-    });
-
     const createInquiry = (processName, unitType, lastTransition) =>
       createTransaction({
         id: `id-${processName}-inquiry-order`,

@@ -2,12 +2,9 @@
  * This is a wrapper component for different Layouts.
  * Navigational 'aside' content should be added to this wrapper.
  */
-import React, { useEffect } from 'react';
-import { node, number, string, shape } from 'prop-types';
-import { compose } from 'redux';
+import React, { useEffect, useState } from 'react';
 
 import { FormattedMessage } from '../../../util/reactIntl';
-import { withViewport } from '../../../util/uiHelpers';
 
 import { TabNav } from '../../../components';
 
@@ -47,7 +44,7 @@ const scrollToTab = (currentPage, scrollLeft, setScrollLeft) => {
 
     const needsSmoothScroll = scrollPositionCurrent !== scrollPositionNew;
 
-    if (!hasParentScrolled || (hasParentScrolled && needsSmoothScroll)) {
+    if (parent.scrollTo && (!hasParentScrolled || (hasParentScrolled && needsSmoothScroll))) {
       // Ensure that smooth scroll animation uses old position as starting point after navigation.
       parent.scrollTo({ left: scrollPositionCurrent });
       // Scroll to new position
@@ -58,32 +55,36 @@ const scrollToTab = (currentPage, scrollLeft, setScrollLeft) => {
   }
 };
 
-const LayoutWrapperAccountSettingsSideNavComponent = props => {
+/**
+ * Side nav with navigation to different account settings.
+ *
+ * @component
+ * @param {Object} props
+ * @param {string?} props.currentPage
+ * @returns {JSX.Element} Side nav with navigation to different account settings
+ */
+const LayoutWrapperAccountSettingsSideNav = props => {
+  const [mounted, setMounted] = useState(false);
   const [scrollLeft, setScrollLeft] = useGlobalState('scrollLeft');
+
   useEffect(() => {
-    const { currentPage, viewport } = props;
-    let scrollTimeout = null;
+    setMounted(true);
+  }, []);
 
-    const { width } = viewport;
-    const hasViewport = width > 0;
-    const hasHorizontalTabLayout = hasViewport && width <= MAX_HORIZONTAL_NAV_SCREEN_WIDTH;
+  useEffect(() => {
+    if (mounted) {
+      const { currentPage } = props;
+      const hasMatchMedia = typeof window !== 'undefined' && window?.matchMedia;
+      const hasHorizontalTabLayout = hasMatchMedia
+        ? window.matchMedia(`(max-width: ${MAX_HORIZONTAL_NAV_SCREEN_WIDTH}px)`)?.matches
+        : true;
 
-    // Check if scrollToTab call is needed (tab is not visible on mobile)
-    if (hasHorizontalTabLayout) {
-      scrollTimeout = window.setTimeout(() => {
+      // Check if scrollToTab call is needed (tab is not visible on mobile)
+      if (hasHorizontalTabLayout) {
         scrollToTab(currentPage, scrollLeft, setScrollLeft);
-      }, 300);
-    }
-
-    return () => {
-      // Update scroll position when unmounting
-      const el = document.querySelector(`#${currentPage}Tab`);
-      setScrollLeft(el.parentElement.scrollLeft);
-      if (scrollTimeout) {
-        clearTimeout(scrollTimeout);
       }
-    };
-  });
+    }
+  }, [mounted]);
 
   const { currentPage } = props;
 
@@ -124,29 +125,5 @@ const LayoutWrapperAccountSettingsSideNavComponent = props => {
 
   return <TabNav rootClassName={css.tabs} tabRootClassName={css.tab} tabs={tabs} />;
 };
-
-LayoutWrapperAccountSettingsSideNavComponent.defaultProps = {
-  className: null,
-  rootClassName: null,
-  children: null,
-  currentPage: null,
-};
-
-LayoutWrapperAccountSettingsSideNavComponent.propTypes = {
-  children: node,
-  className: string,
-  rootClassName: string,
-  currentPage: string,
-
-  // from withViewport
-  viewport: shape({
-    width: number.isRequired,
-    height: number.isRequired,
-  }).isRequired,
-};
-
-const LayoutWrapperAccountSettingsSideNav = compose(withViewport)(
-  LayoutWrapperAccountSettingsSideNavComponent
-);
 
 export default LayoutWrapperAccountSettingsSideNav;

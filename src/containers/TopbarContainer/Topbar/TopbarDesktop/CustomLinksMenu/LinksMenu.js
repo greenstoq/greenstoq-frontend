@@ -60,15 +60,20 @@ const LinkComponent = ({ linkConfig, currentPage }) => {
  * @returns div with same styles as the real "More" label or null if width is known.
  */
 const MeasureMoreMenu = props => {
-  const { width, setWidth, label } = props;
   const moreMenuRef = useRef(null);
+  const [mounted, setMounted] = useState(false);
+  const { width, setWidth, label } = props;
+
   useEffect(() => {
-    if (moreMenuRef.current && !width) {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (mounted && moreMenuRef.current && !width) {
       setWidth(moreMenuRef.current.offsetWidth);
     }
-  }, [moreMenuRef, width]);
+  }, [mounted, moreMenuRef, width]);
 
-  const isServer = typeof window === 'undefined';
   // Component is measured outside of the viewport
   const styleWrapper = !!width
     ? {}
@@ -84,7 +89,7 @@ const MeasureMoreMenu = props => {
         },
       };
 
-  return !width && !isServer
+  return !width && mounted
     ? ReactDOM.createPortal(
         <div
           id="measureMoreLabel"
@@ -138,9 +143,9 @@ const LinksMenu = props => {
           <MenuLabelContent showMoreLabel={showMoreLabel} isOpen={isOpen} intl={intl} />
         </MenuLabel>
         <MenuContent className={css.linkMenuContent}>
-          {links.map(linkConfig => {
+          {links.map((linkConfig, index) => {
             return (
-              <MenuItem key={linkConfig.text}>
+              <MenuItem key={`${linkConfig.text}_${index}`}>
                 <LinkComponent linkConfig={linkConfig} currentPage={currentPage} />
               </MenuItem>
             );

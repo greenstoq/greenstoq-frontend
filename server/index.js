@@ -43,7 +43,7 @@ const sitemapResourceRoute = require('./resources/sitemap');
 const { getExtractors } = require('./importer');
 const renderer = require('./renderer');
 const dataLoader = require('./dataLoader');
-const csp = require('./csp');
+const { generateCSPNonce, csp } = require('./csp');
 const sdkUtils = require('./api-util/sdk');
 
 const buildPath = path.resolve(__dirname, '..', 'build');
@@ -82,10 +82,15 @@ app.use(
 app.use(
   helmet({
     contentSecurityPolicy: false,
+    referrerPolicy: {
+      policy: 'origin',
+    },
   })
 );
 
 if (cspEnabled) {
+  app.use(generateCSPNonce);
+
   // When a CSP directive is violated, the browser posts a JSON body
   // to the defined report URL and we need to parse this body.
   app.use(
@@ -187,7 +192,7 @@ const noCacheHeaders = {
   'Cache-control': 'no-cache, no-store, must-revalidate',
 };
 
-app.get('*', (req, res) => {
+app.get('*', async (req, res) => {
   if (req.url.startsWith('/static/')) {
     // The express.static middleware only handles static resources
     // that it finds, otherwise passes them through. However, we don't
@@ -220,8 +225,10 @@ app.get('*', (req, res) => {
   dataLoader
     .loadData(req.url, sdk, appInfo)
     .then(data => {
-      const html = renderer.render(req.url, context, data, renderApp, webExtractor);
-
+      const cspNonce = cspEnabled ? res.locals.cspNonce : null;
+      return renderer.render(req.url, context, data, renderApp, webExtractor, cspNonce);
+    })
+    .then(html => {
       if (dev) {
         const debugData = {
           url: req.url,

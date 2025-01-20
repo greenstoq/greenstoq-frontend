@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { arrayOf, bool, func, object, shape, string } from 'prop-types';
 import { useHistory } from 'react-router-dom';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
@@ -11,7 +10,7 @@ import { hasPermissionToPostListings } from '../../util/userHelpers';
 import { NO_ACCESS_PAGE_POST_LISTINGS } from '../../util/urlHelpers';
 import { propTypes } from '../../util/types';
 import { isErrorNoPermissionToPostListings } from '../../util/errors';
-import { isScrollingDisabled } from '../../ducks/ui.duck';
+import { isScrollingDisabled, manageDisableScrolling } from '../../ducks/ui.duck';
 
 import {
   H3,
@@ -20,6 +19,7 @@ import {
   UserNav,
   LayoutSingleColumn,
   NamedLink,
+  Modal,
 } from '../../components';
 
 import TopbarContainer from '../../containers/TopbarContainer/TopbarContainer';
@@ -27,8 +27,14 @@ import FooterContainer from '../../containers/FooterContainer/FooterContainer';
 
 import ManageListingCard from './ManageListingCard/ManageListingCard';
 
-import { closeListing, openListing, getOwnListingsById } from './ManageListingsPage.duck';
+import {
+  closeListing,
+  openListing,
+  getOwnListingsById,
+  discardDraft,
+} from './ManageListingsPage.duck';
 import css from './ManageListingsPage.module.css';
+import DiscardDraftModal from './DiscardDraftModal/DiscardDraftModal';
 
 const Heading = props => {
   const { listingsAreLoaded, pagination } = props;
@@ -68,8 +74,37 @@ const PaginationLinksMaybe = props => {
   ) : null;
 };
 
+/**
+ * The ManageListingsPage component.
+ *
+ * @component
+ * @param {Object} props
+ * @param {propTypes.currentUser} props.currentUser - The current user
+ * @param {propTypes.uuid} props.closingListing - The closing listing
+ * @param {Object} props.closingListingError - The closing listing error
+ * @param {propTypes.error} props.closingListingError.listingId - The closing listing id
+ * @param {propTypes.error} props.closingListingError.error - The closing listing error
+ * @param {propTypes.ownListing[]} props.listings - The listings
+ * @param {function} props.onCloseListing - The onCloseListing function
+ * @param {function} props.onDiscardDraft - The onDiscardDraft function
+ * @param {function} props.onOpenListing - The onOpenListing function
+ * @param {Object} props.openingListing - The opening listing
+ * @param {propTypes.uuid} props.openingListing.uuid - The opening listing uuid
+ * @param {Object} props.openingListingError - The opening listing error
+ * @param {propTypes.uuid} props.openingListingError.listingId - The opening listing id
+ * @param {propTypes.error} props.openingListingError.error - The opening listing error
+ * @param {propTypes.pagination} props.pagination - The pagination
+ * @param {boolean} props.queryInProgress - Whether the query is in progress
+ * @param {propTypes.error} props.queryListingsError - The query listings error
+ * @param {Object} props.queryParams - The query params
+ * @param {boolean} props.scrollingDisabled - Whether the scrolling is disabled
+ * @param {function} props.onManageDisableScrolling - The onManageDisableScrolling function
+ * @returns {JSX.Element} manage listings page component
+ */
 export const ManageListingsPageComponent = props => {
   const [listingMenuOpen, setListingMenuOpen] = useState(null);
+  const [discardDraftModalOpen, setDiscardDraftModalOpen] = useState(null);
+  const [discardDraftModalId, setDiscardDraftModalId] = useState(null);
   const history = useHistory();
   const routeConfiguration = useRouteConfiguration();
   const intl = useIntl();
@@ -78,8 +113,11 @@ export const ManageListingsPageComponent = props => {
     currentUser,
     closingListing,
     closingListingError,
-    listings,
+    discardingDraft,
+    discardingDraftError,
+    listings = [],
     onCloseListing,
+    onDiscardDraft,
     onOpenListing,
     openingListing,
     openingListingError,
@@ -88,6 +126,7 @@ export const ManageListingsPageComponent = props => {
     queryListingsError,
     queryParams,
     scrollingDisabled,
+    onManageDisableScrolling,
   } = props;
 
   useEffect(() => {
@@ -116,6 +155,17 @@ export const ManageListingsPageComponent = props => {
     }
   };
 
+  const openDiscardDraftModal = listingId => {
+    setDiscardDraftModalId(listingId);
+    setDiscardDraftModalOpen(true);
+  };
+
+  const handleDiscardDraft = () => {
+    onDiscardDraft(discardDraftModalId);
+    setDiscardDraftModalOpen(false);
+    setDiscardDraftModalId(null);
+  };
+
   const hasPaginationInfo = !!pagination && pagination.totalItems != null;
   const listingsAreLoaded = !queryInProgress && hasPaginationInfo;
 
@@ -137,6 +187,7 @@ export const ManageListingsPageComponent = props => {
 
   const closingErrorListingId = !!closingListingError && closingListingError.listingId;
   const openingErrorListingId = !!openingListingError && openingListingError.listingId;
+  const discardingErrorListingId = !!discardingDraftError && discardingDraft.listingId;
 
   const panelWidth = 62.5;
   // Render hints for responsive image
@@ -173,16 +224,27 @@ export const ManageListingsPageComponent = props => {
                 key={l.id.uuid}
                 listing={l}
                 isMenuOpen={!!listingMenuOpen && listingMenuOpen.id.uuid === l.id.uuid}
-                actionsInProgressListingId={openingListing || closingListing}
+                actionsInProgressListingId={openingListing || closingListing || discardingDraft}
                 onToggleMenu={onToggleMenu}
                 onCloseListing={onCloseListing}
                 onOpenListing={handleOpenListing}
+                onDiscardDraft={openDiscardDraftModal}
                 hasOpeningError={openingErrorListingId.uuid === l.id.uuid}
                 hasClosingError={closingErrorListingId.uuid === l.id.uuid}
+                hasDiscardingError={discardingErrorListingId.uuid === l.id.uuid}
                 renderSizes={renderSizes}
               />
             ))}
           </div>
+          {onManageDisableScrolling && discardDraftModalOpen ? (
+            <DiscardDraftModal
+              id="ManageListingsPage"
+              isOpen={discardDraftModalOpen}
+              onManageDisableScrolling={onManageDisableScrolling}
+              onCloseModal={() => setDiscardDraftModalOpen(false)}
+              onDiscardDraft={handleDiscardDraft}
+            />
+          ) : null}
 
           <PaginationLinksMaybe
             listingsAreLoaded={listingsAreLoaded}
@@ -193,40 +255,6 @@ export const ManageListingsPageComponent = props => {
       </LayoutSingleColumn>
     </Page>
   );
-};
-
-ManageListingsPageComponent.defaultProps = {
-  currentUser: null,
-  listings: [],
-  pagination: null,
-  queryListingsError: null,
-  queryParams: null,
-  closingListing: null,
-  closingListingError: null,
-  openingListing: null,
-  openingListingError: null,
-};
-
-ManageListingsPageComponent.propTypes = {
-  currentUser: propTypes.currentUser,
-  closingListing: shape({ uuid: string.isRequired }),
-  closingListingError: shape({
-    listingId: propTypes.uuid.isRequired,
-    error: propTypes.error.isRequired,
-  }),
-  listings: arrayOf(propTypes.ownListing),
-  onCloseListing: func.isRequired,
-  onOpenListing: func.isRequired,
-  openingListing: shape({ uuid: string.isRequired }),
-  openingListingError: shape({
-    listingId: propTypes.uuid.isRequired,
-    error: propTypes.error.isRequired,
-  }),
-  pagination: propTypes.pagination,
-  queryInProgress: bool.isRequired,
-  queryListingsError: propTypes.error,
-  queryParams: object,
-  scrollingDisabled: bool.isRequired,
 };
 
 const mapStateToProps = state => {
@@ -241,6 +269,8 @@ const mapStateToProps = state => {
     openingListingError,
     closingListing,
     closingListingError,
+    discardingDraft,
+    discardingDraftError,
   } = state.ManageListingsPage;
   const listings = getOwnListingsById(state, currentPageResultIds);
   return {
@@ -256,12 +286,17 @@ const mapStateToProps = state => {
     openingListingError,
     closingListing,
     closingListingError,
+    discardingDraft,
+    discardingDraftError,
   };
 };
 
 const mapDispatchToProps = dispatch => ({
   onCloseListing: listingId => dispatch(closeListing(listingId)),
   onOpenListing: listingId => dispatch(openListing(listingId)),
+  onDiscardDraft: listingId => dispatch(discardDraft(listingId)),
+  onManageDisableScrolling: (componentId, disableScrolling) =>
+    dispatch(manageDisableScrolling(componentId, disableScrolling)),
 });
 
 const ManageListingsPage = compose(

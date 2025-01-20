@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { arrayOf, bool, func, shape, string } from 'prop-types';
-import { compose } from 'redux';
 import { Field, Form as FinalForm } from 'react-final-form';
 import arrayMutators from 'final-form-arrays';
 import classNames from 'classnames';
 
 // Import util modules
-import { intlShape, injectIntl, FormattedMessage } from '../../../../util/reactIntl';
+import { FormattedMessage, useIntl } from '../../../../util/reactIntl';
 import { EXTENDED_DATA_SCHEMA_TYPES, propTypes } from '../../../../util/types';
-import { isFieldForCategory, isFieldForListingType } from '../../../../util/fieldHelpers';
+import {
+  isFieldForCategory,
+  isFieldForListingType,
+  isValidCurrencyForTransactionProcess,
+} from '../../../../util/fieldHelpers';
 import { maxLength, required, composeValidators } from '../../../../util/validators';
 
 // Import shared components
@@ -272,9 +274,34 @@ const AddListingFields = props => {
   return <>{fields}</>;
 };
 
-// Form that asks title, description, transaction process and unit type for pricing
-// In addition, it asks about custom fields according to marketplace-custom-config.js
-const EditListingDetailsFormComponent = props => (
+/**
+ * Form that asks title, description, transaction process and unit type for pricing
+ * In addition, it asks about custom fields according to marketplace-custom-config.js
+ *
+ * @component
+ * @param {Object} props
+ * @param {string} [props.className] - Custom class that extends the default class for the root element
+ * @param {string} [props.formId] - The form id
+ * @param {boolean} props.disabled - Whether the form is disabled
+ * @param {boolean} props.ready - Whether the form is ready
+ * @param {boolean} props.updated - Whether the form is updated
+ * @param {boolean} props.updateInProgress - Whether the update is in progress
+ * @param {Object} props.fetchErrors - The fetch errors object
+ * @param {propTypes.error} [props.fetchErrors.createListingDraftError] - The create listing draft error
+ * @param {propTypes.error} [props.fetchErrors.showListingsError] - The show listings error
+ * @param {propTypes.error} [props.fetchErrors.updateListingError] - The update listing error
+ * @param {Function} props.pickSelectedCategories - The pick selected categories function
+ * @param {Array<Object>} props.selectableListingTypes - The selectable listing types
+ * @param {boolean} props.hasExistingListingType - Whether the listing type is existing
+ * @param {propTypes.listingFields} props.listingFieldsConfig - The listing fields config
+ * @param {string} props.listingCurrency - The listing currency
+ * @param {string} props.saveActionMsg - The save action message
+ * @param {boolean} [props.autoFocus] - Whether the form should autofocus
+ * @param {Function} props.onListingTypeChange - The listing type change function
+ * @param {Function} props.onSubmit - The submit function
+ * @returns {JSX.Element}
+ */
+const EditListingDetailsForm = props => (
   <FinalForm
     {...props}
     mutators={{ ...arrayMutators }}
@@ -284,26 +311,29 @@ const EditListingDetailsFormComponent = props => (
         className,
         disabled,
         ready,
-        formId,
+        formId = 'EditListingDetailsForm',
         form: formApi,
         handleSubmit,
         onListingTypeChange,
-        intl,
         invalid,
         pristine,
+        marketplaceCurrency,
+        marketplaceName,
         selectableListingTypes,
         selectableCategories,
-        hasExistingListingType,
+        hasExistingListingType = false,
         pickSelectedCategories,
         categoryPrefix,
         saveActionMsg,
         updated,
         updateInProgress,
         fetchErrors,
-        listingFieldsConfig,
+        listingFieldsConfig = [],
+        listingCurrency,
         values,
       } = formRenderProps;
 
+      const intl = useIntl();
       const { listingType, transactionProcessAlias, unitType } = values;
       const [allCategoriesChosen, setAllCategoriesChosen] = useState(false);
 
@@ -316,6 +346,20 @@ const EditListingDetailsFormComponent = props => (
           maxLength: TITLE_MAX_LENGTH,
         }
       );
+
+      // Determine the currency to validate:
+      // - If editing an existing listing, use the listing's currency.
+      // - If creating a new listing, fall back to the default marketplace currency.
+      const currencyToCheck = listingCurrency || marketplaceCurrency;
+
+      // Verify if the selected listing type's transaction process supports the chosen currency.
+      // This checks compatibility between the transaction process
+      // and the marketplace or listing currency.
+      const isCompatibleCurrency = isValidCurrencyForTransactionProcess(
+        transactionProcessAlias,
+        currencyToCheck
+      );
+
       const maxLength60Message = maxLength(maxLengthMessage, TITLE_MAX_LENGTH);
 
       const hasCategories = selectableCategories && selectableCategories.length > 0;
@@ -330,7 +374,11 @@ const EditListingDetailsFormComponent = props => (
       const submitInProgress = updateInProgress;
       const hasMandatoryListingTypeData = listingType && transactionProcessAlias && unitType;
       const submitDisabled =
-        invalid || disabled || submitInProgress || !hasMandatoryListingTypeData;
+        invalid ||
+        disabled ||
+        submitInProgress ||
+        !hasMandatoryListingTypeData ||
+        !isCompatibleCurrency;
 
       return (
         <Form className={classes} onSubmit={handleSubmit}>
@@ -346,7 +394,7 @@ const EditListingDetailsFormComponent = props => (
             intl={intl}
           />
 
-          {showCategories ? (
+          {showCategories && isCompatibleCurrency && (
             <FieldSelectCategory
               values={values}
               prefix={categoryPrefix}
@@ -356,23 +404,25 @@ const EditListingDetailsFormComponent = props => (
               allCategoriesChosen={allCategoriesChosen}
               setAllCategoriesChosen={setAllCategoriesChosen}
             />
-          ) : null}
+          )}
 
-          {showTitle ? (
+          {showTitle && isCompatibleCurrency && (
             <FieldTextInput
               id={`${formId}title`}
               name="title"
               className={css.title}
               type="text"
               label={intl.formatMessage({ id: 'EditListingDetailsForm.title' })}
-              placeholder={intl.formatMessage({ id: 'EditListingDetailsForm.titlePlaceholder' })}
+              placeholder={intl.formatMessage({
+                id: 'EditListingDetailsForm.titlePlaceholder',
+              })}
               maxLength={TITLE_MAX_LENGTH}
               validate={composeValidators(required(titleRequiredMessage), maxLength60Message)}
               autoFocus={autoFocus}
             />
-          ) : null}
+          )}
 
-          {showDescription ? (
+          {showDescription && isCompatibleCurrency && (
             <FieldTextInput
               id={`${formId}description`}
               name="description"
@@ -388,9 +438,9 @@ const EditListingDetailsFormComponent = props => (
                 })
               )}
             />
-          ) : null}
+          )}
 
-          {showListingFields ? (
+          {showListingFields && isCompatibleCurrency && (
             <AddListingFields
               listingType={listingType}
               listingFieldsConfig={listingFieldsConfig}
@@ -398,7 +448,16 @@ const EditListingDetailsFormComponent = props => (
               formId={formId}
               intl={intl}
             />
-          ) : null}
+          )}
+
+          {!isCompatibleCurrency && listingType && (
+            <p className={css.error}>
+              <FormattedMessage
+                id="EditListingDetailsForm.incompatibleCurrency"
+                values={{ marketplaceName, marketplaceCurrency }}
+              />
+            </p>
+          )}
 
           <Button
             className={css.submitButton}
@@ -415,40 +474,4 @@ const EditListingDetailsFormComponent = props => (
   />
 );
 
-EditListingDetailsFormComponent.defaultProps = {
-  className: null,
-  formId: 'EditListingDetailsForm',
-  fetchErrors: null,
-  hasExistingListingType: false,
-  listingFieldsConfig: [],
-};
-
-EditListingDetailsFormComponent.propTypes = {
-  className: string,
-  formId: string,
-  intl: intlShape.isRequired,
-  onSubmit: func.isRequired,
-  onListingTypeChange: func.isRequired,
-  saveActionMsg: string.isRequired,
-  disabled: bool.isRequired,
-  ready: bool.isRequired,
-  updated: bool.isRequired,
-  updateInProgress: bool.isRequired,
-  fetchErrors: shape({
-    createListingDraftError: propTypes.error,
-    showListingsError: propTypes.error,
-    updateListingError: propTypes.error,
-  }),
-  pickSelectedCategories: func.isRequired,
-  selectableListingTypes: arrayOf(
-    shape({
-      listingType: string.isRequired,
-      transactionProcessAlias: string.isRequired,
-      unitType: string.isRequired,
-    })
-  ).isRequired,
-  hasExistingListingType: bool,
-  listingFieldsConfig: propTypes.listingFields,
-};
-
-export default compose(injectIntl)(EditListingDetailsFormComponent);
+export default EditListingDetailsForm;

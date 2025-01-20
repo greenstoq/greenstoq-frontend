@@ -322,6 +322,16 @@ export const fetchCurrentUserNotifications = () => (dispatch, getState, sdks) =>
     .catch(e => dispatch(fetchCurrentUserNotificationsError(storableError(e))));
 };
 
+/**
+ * Fetch currentUser API entity.
+ *
+ * @param {Object} options
+ * @param {Object} [options.callParams]           Optional parameters for the currentUser.show().
+ * @param {boolean} [options.updateHasListings]   Make extra call for fetchCurrentUserHasListings()?
+ * @param {boolean} [options.updateNotifications] Make extra call for fetchCurrentUserNotifications()?
+ * @param {boolean} [options.afterLogin]          Fetch is no-op for unauthenticated users except after login() call
+ * @param {boolean} [options.enforce]             Enforce the call even if the currentUser entity is freshly fetched.
+ */
 export const fetchCurrentUser = options => (dispatch, getState, sdks) => {
   const state = getState();
   const sdk = sdks.shareTribeSdk;
