@@ -36,6 +36,8 @@ import {
   setInitialValues,
   fetchReviewsRequest,
   fetchReviewsSuccess,
+  fetchDocumentsSuccess,
+  fetchDocumentsRequest,
 } from './ListingPage.duck';
 
 import ActionBarMaybe from './ActionBarMaybe';
@@ -420,11 +422,14 @@ describe('Duck', () => {
 
     // For users with full viewing rights, ListingPage.showListing
     // uses listings.show endpoint
-    const sdk = {
+    const sdk = { shareTribeSdk: {
       listings: { show: sdkFn(fakeResponse(listing1)) },
       currentUser: { show: sdkFn(fakeResponse(currentUser)) },
       authInfo: sdkFn({}),
       reviews: { query: sdkFn(fakeResponse(review)) },
+    }, greenStoqSdk: {
+        getDocuments: sdkFn(fakeResponse([])),
+      }
     };
 
     const dispatch = createFakeDispatch(getState, sdk);
@@ -438,9 +443,11 @@ describe('Duck', () => {
         showListingRequest(uuid),
         currentUserShowRequest(),
         fetchReviewsRequest(uuid),
+        fetchDocumentsRequest(),
         currentUserShowSuccess(currentUser),
         addMarketplaceEntities(fakeResponse(listing1), sanitizeConfig),
         fetchReviewsSuccess([review]),
+        fetchDocumentsSuccess(),
         authInfoRequest(),
         authInfoSuccess({}),
       ]);
@@ -462,10 +469,13 @@ describe('Duck', () => {
     // For viewing rights restricted users, ListingPage.showListing
     // users ownListings.show endpoint, which throws 403 when accessing
     // a listing that is not the current user's own
-    const sdk = {
+    const sdk = { shareTribeSdk: {
       ownListings: { show: jest.fn(() => Promise.reject(error)) },
       currentUser: { show: sdkFn(fakeResponse(currentUser)) },
       authInfo: sdkFn({}),
+    }, greenStoqSdk: {
+        getDocuments: sdkFn(fakeResponse([])),
+      }
     };
 
     const dispatch = createFakeDispatch(getState, sdk);
@@ -478,7 +488,9 @@ describe('Duck', () => {
         setInitialValues({ inquiryModalOpenForListingId: null, lineItems: null }),
         showListingRequest(uuid),
         currentUserShowRequest(),
+        fetchDocumentsRequest(),
         currentUserShowSuccess(currentUser),
+        fetchDocumentsSuccess(),
         authInfoRequest(),
         showListingError(storableError(error)),
         authInfoSuccess({}),
@@ -499,10 +511,13 @@ describe('Duck', () => {
     // For viewing rights restricted users, ListingPage.showListing
     // users ownListings.show endpoint, which fetches the user's
     // own listings successfully.
-    const sdk = {
+    const sdk = { shareTribeSdk: {
       ownListings: { show: sdkFn(fakeResponse(listing1Own)) },
       currentUser: { show: sdkFn(fakeResponse(currentUser)) },
       authInfo: sdkFn({}),
+    }, greenStoqSdk: {
+        getDocuments: sdkFn(fakeResponse([])),
+      }
     };
 
     const dispatch = createFakeDispatch(getState, sdk);
@@ -515,8 +530,10 @@ describe('Duck', () => {
         setInitialValues({ inquiryModalOpenForListingId: null, lineItems: null }),
         showListingRequest(uuid),
         currentUserShowRequest(),
+        fetchDocumentsRequest(),
         currentUserShowSuccess(currentUser),
         addMarketplaceEntities(fakeResponse(listing1Own), sanitizeConfig),
+        fetchDocumentsSuccess(),
         authInfoRequest(),
         authInfoSuccess({}),
       ]);

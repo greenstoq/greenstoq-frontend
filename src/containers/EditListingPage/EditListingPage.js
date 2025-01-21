@@ -5,7 +5,7 @@ import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 // Import configs and util modules
-import { intlShape, injectIntl } from '../../util/reactIntl';
+import { intlShape, useIntl } from '../../util/reactIntl';
 import { types as sdkTypes } from '../../util/sdkLoader';
 import {
   LISTING_PAGE_PARAM_TYPE_DRAFT,

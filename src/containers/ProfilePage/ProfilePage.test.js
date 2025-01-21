@@ -222,13 +222,13 @@ describe('Duck', () => {
       auth: { isAuthenticated: true },
     });
 
-    const sdk = {
+    const sdk = { shareTribeSdk : {
       currentUser: { show: sdkFn(fakeResponse(currentUser)) },
       users: { show: sdkFn(fakeResponse(user)) },
       reviews: { query: sdkFn(fakeResponse(reviews)) },
       listings: { query: sdkFn(fakeResponse([listing])) },
       authInfo: sdkFn({}),
-    };
+    } };
 
     const dispatch = createFakeDispatch(getState, sdk);
 
@@ -272,13 +272,13 @@ describe('Duck', () => {
       auth: { isAuthenticated: true },
     });
 
-    const sdk = {
+    const sdk = { shareTribeSdk: {
       currentUser: { show: sdkFn(fakeResponse(currentUser)) },
       users: { show: errorSdkFn(forbiddenError) },
       listings: { query: errorSdkFn(forbiddenError) },
       reviews: { query: errorSdkFn(forbiddenError) },
       authInfo: sdkFn({}),
-    };
+    } };
 
     const dispatch = createFakeDispatch(getState, sdk);
     const otherUserId = new UUID('otherUserId');
@@ -320,11 +320,11 @@ describe('Duck', () => {
       auth: { isAuthenticated: true },
     });
 
-    const sdk = {
+    const sdk = { shareTribeSdk: {
       currentUser: { show: sdkFn(fakeResponse(currentUser)) },
       ownListings: { query: sdkFn(fakeResponse([listing])) },
       authInfo: sdkFn({}),
-    };
+    } };
 
     const dispatch = createFakeDispatch(getState, sdk);
 

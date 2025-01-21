@@ -196,17 +196,16 @@ describe('auth duck', () => {
     it('should dispatch success and fetch current user', () => {
       const initialState = reducer();
       const getState = () => ({ auth: initialState });
-      const sdks = { shareTribeSdk: { login: jest.fn(() => Promise.resolve({})) } };
       const fakeCurrentUser = createCurrentUser({ id: 'test-user' });
       const fakeCurrentUserResponse = { data: { data: fakeCurrentUser, include: [] } };
       const fakeTransactionsResponse = { data: { data: [], include: [] } };
-      const sdk = {
+      const sdks = { shareTribeSdk: {
         login: jest.fn(() => Promise.resolve({})),
         authInfo: jest.fn(() => Promise.resolve({})),
         currentUser: { show: jest.fn(() => Promise.resolve(fakeCurrentUserResponse)) },
         transactions: { query: jest.fn(() => Promise.resolve(fakeTransactionsResponse)) },
-      };
-      const dispatch = createFakeDispatch(getState, sdks.shareTribeSdk);
+      } };
+      const dispatch = createFakeDispatch(getState, sdks);
       const username = 'x.x@example.com';
       const password = 'pass';
 

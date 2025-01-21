@@ -529,11 +529,11 @@ describe('Duck', () => {
       auth: { isAuthenticated: true },
     });
 
-    const sdk = {
+    const sdk = { shareTribeSdk: {
       currentUser: { show: sdkFn(fakeResponse(currentUser)) },
       listings: { query: sdkFn(fakeResponse([l1, l2])) },
       authInfo: sdkFn({}),
-    };
+    } };
 
     const dispatch = createFakeDispatch(getState, sdk);
 
