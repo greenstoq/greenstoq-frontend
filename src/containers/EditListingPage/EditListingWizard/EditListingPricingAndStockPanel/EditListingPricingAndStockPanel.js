@@ -46,10 +46,10 @@ const getInitialValues = props => {
       : 1;
   const stockTypeInfinity = [];
 
-  const units = publicData?.units || null;
+  const priceDescription = publicData?.priceDescription || null;
   const minimumOrder = publicData?.minimumOrder || null;
 
-  return { price, stock, units, minimumOrder, stockTypeInfinity };
+  return { price, stock, priceDescription, minimumOrder, stockTypeInfinity };
 };
 
 /**
@@ -138,7 +138,7 @@ const EditListingPricingAndStockPanel = props => {
           className={css.form}
           initialValues={initialValues}
           onSubmit={values => {
-            const { price, stock, units, minimumOrder, stockTypeInfinity } = values;
+            const { price, stock, priceDescription, minimumOrder, stockTypeInfinity } = values;
 
             // Update stock only if the value has changed, or stock is infinity in stockType,
             // but not current stock is a small number (might happen with old listings)
@@ -172,7 +172,7 @@ const EditListingPricingAndStockPanel = props => {
               price,
               ...stockUpdateMaybe,
               publicData: {
-                units: units? units : null,
+                priceDescription: priceDescription? priceDescription : null,
                 minimumOrder: minimumOrder? minimumOrder: null,
               },
             };
@@ -182,7 +182,7 @@ const EditListingPricingAndStockPanel = props => {
               initialValues: {
                 price,
                 stock: stockUpdateMaybe?.stockUpdate?.newTotal || stock,
-                units,
+                priceDescription,
                 minimumOrder,
                 stockTypeInfinity,
               },

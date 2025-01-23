@@ -197,6 +197,20 @@ export const EditListingPricingAndStockForm = props => (
             validate={priceValidators}
           />
 
+          <FieldTextInput
+            className={css.input}
+            id={`${formId}.priceDescription`}
+            name="priceDescription"
+            label={intl.formatMessage({ id: 'EditListingPricingAndStockForm.priceDescriptionLabel' })}
+            placeholder={intl.formatMessage({
+              id: 'EditListingPricingAndStockForm.priceDescriptionPlaceholder',
+            })}
+            type="text"
+            validate={validators.required(
+              intl.formatMessage({ id: 'EditListingPricingAndStockForm.priceDescriptionRequired' })
+            )}
+          />
+
           <UpdateStockToInfinityCheckboxMaybe
             formId={formId}
             hasInfiniteStock={hasInfiniteStock}
@@ -235,29 +249,6 @@ export const EditListingPricingAndStockForm = props => (
             </Field>
           )}
           {setStockError ? <p className={css.error}>{stockErrorMessage}</p> : null}
-
-          <FieldSelect
-            id={`${formId}.units`}
-            name="units"
-            className={css.input}
-            label={intl.formatMessage({ id: 'EditListingPricingAndStockForm.unitsTypeLabel' })}
-            validate={validators.required(
-              intl.formatMessage({ id: 'EditListingPricingAndStockForm.unitsTypeRequired' })
-            )}
-          >
-            <option disabled value="">
-              {intl.formatMessage({ id: 'EditListingPricingAndStockForm.unitsTypePlaceholder' })}
-            </option>
-            <option key="m3" value="m3">
-              m3
-            </option>
-            <option key="mg" value="mg">
-              mg
-            </option>
-            <option key="item" value="item">
-              item
-            </option>
-          </FieldSelect>
 
           <FieldTextInput
             className={css.input}

@@ -249,7 +249,7 @@ const OrderPanel = props => {
   const lineItemUnitType = lineItemUnitTypeMaybe || `line-item/${unitType}`;
 
   const price = listing?.attributes?.price;
-  const units = publicData?.units || null;
+  const priceDescription = publicData?.priceDescription || null;
   const minimumOrder = publicData?.minimumOrder || null;
   const isPaymentProcess = processName !== INQUIRY_PROCESS_NAME;
 
@@ -346,8 +346,8 @@ const OrderPanel = props => {
           marketplaceCurrency={marketplaceCurrency}
         />
 
-        {units ? (
-          <span><FormattedMessage id="OrderPanel.perUnitLabel"/> {units}</span>
+        {priceDescription ? (
+          <span>{priceDescription}</span>
         ): null}
 
         <div className={css.author}>
