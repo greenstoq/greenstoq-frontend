@@ -14,11 +14,23 @@ way to update this template, but currently, we follow a pattern:
 
 ## Upcoming version 2025-XX-XX
 
+- [fix] SearchPageWithMap: duplicate class caused positioning issue on localhost:3000.
+  [#546](https://github.com/sharetribe/web-template/pull/546)
+- [fix] TopbarDesktop: fix a typo (non-existent element attribute), when the search form was not
+  shown. [#545](https://github.com/sharetribe/web-template/pull/545)
+- [change] priceForSchemaMaybe: render offer price when price is 0. This helps customizations, but
+  it's not enough for no-code features to support 0 price for inquiries.
+  [#544](https://github.com/sharetribe/web-template/pull/544)
+- [fix] TabNavHorizontal: Dark skin tab focus styles overriding hover font color.
+  [#543](https://github.com/sharetribe/web-template/pull/543)
+- [fix] Private marketplace: allow search crawlers to access the `/sitemap` route.
+  [#541](https://github.com/sharetribe/web-template/pull/541)
+
 ## [v7.1.0] 2025-01-23
 
-- [add] Add support for hiding the Topbar search based on configuration. 
+- [add] Add support for hiding the Topbar search based on configuration.
   [#531](https://github.com/sharetribe/web-template/pull/531)
-- [fix] ListingPage: fetchMonthlyTimeSlots didn't work correctly with day unitType.
+- [fix] TransactionPage: fetchMonthlyTimeSlots didn't work correctly with day unitType.
   [#536](https://github.com/sharetribe/web-template/pull/536)
 - [change] Google's search schema requires a price that uses dot as decimal separator.
   [#535](https://github.com/sharetribe/web-template/pull/535)
