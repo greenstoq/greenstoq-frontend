@@ -14,6 +14,10 @@ way to update this template, but currently, we follow a pattern:
 
 ## Upcoming version 2025-XX-XX
 
+## [v7.2.0] 2025-01-30
+
+- [add] Add support for the new Google Places API
+  [#539](https://github.com/sharetribe/web-template/pull/539)
 - [fix] SearchPageWithMap: duplicate class caused positioning issue on localhost:3000.
   [#546](https://github.com/sharetribe/web-template/pull/546)
 - [fix] TopbarDesktop: fix a typo (non-existent element attribute), when the search form was not
@@ -25,6 +29,8 @@ way to update this template, but currently, we follow a pattern:
   [#543](https://github.com/sharetribe/web-template/pull/543)
 - [fix] Private marketplace: allow search crawlers to access the `/sitemap` route.
   [#541](https://github.com/sharetribe/web-template/pull/541)
+
+  [v7.2.0]: https://github.com/sharetribe/web-template/compare/v7.1.0...v7.2.0
 
 ## [v7.1.0] 2025-01-23
 
@@ -39,7 +45,7 @@ way to update this template, but currently, we follow a pattern:
 
 ## [v7.0.0] 2025-01-15
 
-This major release takes the React v17.0.2 into use.
+This major release takes the React v18.3.1 into use.
 
 - [fix] EditListingWizard: fix a bug with YouTube field.
   [#533](https://github.com/sharetribe/web-template/pull/533)
