@@ -14,6 +14,17 @@ way to update this template, but currently, we follow a pattern:
 
 ## Upcoming version 2025-XX-XX
 
+- [fix] Remove obsolete Flex CLI references
+  [#550](https://github.com/sharetribe/web-template/pull/550)
+- [fix] BookingTimeForm (hourly booking): calendar day was not localized causing isDayBlocked fn to
+  choose past day, if listing's time zone was to the west of the browser's location / time zone.
+  [#556](https://github.com/sharetribe/web-template/pull/556)
+- [fix] AuthenticationPage: fix a bug with autenticated users accessing the auth pages.
+  [#555](https://github.com/sharetribe/web-template/pull/555)
+- [fix] CheckoutPageWithPayment & PaymentMethodsPage had a typo in a variable name.
+  [#554](https://github.com/sharetribe/web-template/pull/554)
+- [fix] DatePicker: fix a bug with the calendar transition.
+  [#553](https://github.com/sharetribe/web-template/pull/553)
 - [add] Add fixed bookings and price variant name support to booking process email templates.
   [#552](https://github.com/sharetribe/web-template/pull/552)
 - [fix] LocationAutocompleteInput: fix a bug with Google Maps API loading order with Webpack Dev
